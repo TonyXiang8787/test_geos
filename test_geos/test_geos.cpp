@@ -2,11 +2,10 @@
 //
 
 #include <iostream>
-#define GEOS_USE_ONLY_R_API
-#include "geos_c.h"
+#include "spatial_mapper.hpp"
 
 int main()
 {
-	GEOSContextHandle_t handle = GEOS_init_r();
-	GEOS_finish_r(handle);
+	spatial_mapper::Mapper mapper{};
+
 }
