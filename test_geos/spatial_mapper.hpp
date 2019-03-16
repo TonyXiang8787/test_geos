@@ -1,6 +1,6 @@
 #pragma once
 
-#include "geos_helper.hpp"
+#include "geos_type_def.hpp"
 
 
 namespace spatial_mapper {

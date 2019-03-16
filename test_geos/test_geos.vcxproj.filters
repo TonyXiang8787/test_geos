@@ -23,7 +23,7 @@
     <ClInclude Include="spatial_mapper.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="geos_helper.hpp">
+    <ClInclude Include="geos_type_def.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
