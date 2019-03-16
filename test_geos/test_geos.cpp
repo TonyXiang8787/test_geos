@@ -19,6 +19,5 @@ int main()
 	GEOSCoordSeq_setY_r(hl, coord_seq, 3, 0.0);
 
 	GEOSGeometry* linear_ring = GEOSGeom_createLinearRing_r(hl, coord_seq);
-	GEOSGeometry* polygon = GEOSGeom_createPolygon_r(hl, linear_ring, nullptr, 0);
-	GEOSGeom_destroy_r(hl, polygon);
+	spatial_mapper::GeometryHandle polygon{ GEOSGeom_createPolygon_r(hl, linear_ring, nullptr, 0), hl };
 }
