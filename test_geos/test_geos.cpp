@@ -7,7 +7,7 @@
 int main()
 {
 	spatial_mapper::Mapper mapper{};
-	GEOSContextHandle_t hl = mapper.global_handle();
+	GEOSContextHandle_t hl = mapper.hl();
 	GEOSCoordSequence* coord_seq = GEOSCoordSeq_create_r(hl, 4, 2);
 	GEOSCoordSeq_setX_r(hl, coord_seq, 0, 0.0);
 	GEOSCoordSeq_setY_r(hl, coord_seq, 0, 0.0);

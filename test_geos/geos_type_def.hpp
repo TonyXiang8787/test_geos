@@ -5,9 +5,12 @@
 
 #include <memory>
 #include <type_traits>
+#include <vector>
 
 
 namespace spatial_mapper {
+
+using Index = uint32_t;
 
 // global
 template <auto fn>
@@ -35,4 +38,25 @@ using CoordSeqHandle = unique_ptr_handle_deleter<
 	GEOSCoordSequence, GEOSCoordSeq_destroy_r>;
 using GeometryHandle = unique_ptr_handle_deleter<
 	GEOSGeometry, GEOSGeom_destroy_r>;
+
+// input data structure
+struct PointCoord {
+	double x;
+	double y;
+};
+using CoordVec = std::vector<PointCoord>;
+using IDVec = std::vector<Index>;
+struct PointCollection {
+	CoordVec data;
+};
+struct LineStringCollection {
+	CoordVec data;
+	IDVec indptr;
+};
+struct PolygonCollection {
+	CoordVec data;
+	IDVec indptr;
+};
+static_assert(sizeof(PointCoord) == sizeof(double[2]));
+static_assert(alignof(PointCoord) == alignof(double[2]));
 }
