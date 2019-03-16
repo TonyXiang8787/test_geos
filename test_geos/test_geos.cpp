@@ -7,8 +7,6 @@
 
 int main()
 {
-    std::cout << "Hello World!\n"; 
-
-	auto x = GEOS_init_r();
-	GEOS_finish_r(x);
+	GEOSContextHandle_t handle = GEOS_init_r();
+	GEOS_finish_r(handle);
 }
