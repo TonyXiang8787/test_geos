@@ -22,7 +22,7 @@ using GlobalHandleObj = std::remove_pointer_t<GEOSContextHandle_t>;
 using GlobalHandle = unique_ptr_deleter<GlobalHandleObj, GEOS_finish_r>;
 
 // handle deleter
-template <class T, auto fn>
+template <class T, void (*fn)(GEOSContextHandle_t, T*)>
 class handle_deleter {
 public:
 	handle_deleter(GEOSContextHandle_t handle) : hl_{ handle } {}
@@ -30,7 +30,7 @@ public:
 private:
 	GEOSContextHandle_t const hl_;
 };
-template <typename T, auto fn>
+template <typename T, void(*fn)(GEOSContextHandle_t, T*)>
 using unique_ptr_handle_deleter = std::unique_ptr<T, handle_deleter<T, fn>>;
 using RTreeHandle = unique_ptr_handle_deleter<
 	GEOSSTRtree, GEOSSTRtree_destroy_r>;
