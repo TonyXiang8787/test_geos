@@ -26,7 +26,7 @@ private:
 	GeometryHandle create_point(PointCoord const* pt, Index n);
 	GeometryHandle create_linestring(PointCoord const* pt, Index n);
 	GeometryHandle create_polygon(PointCoord const* pt, Index n);
-
+	
 	void create_internal_map();
 };
 
