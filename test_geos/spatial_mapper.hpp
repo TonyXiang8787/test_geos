@@ -15,9 +15,10 @@ public:
 		rtree_{ GEOSSTRtree_create_r(hl(), rtree_node_capacity), hl() }
 	{}
 	template<class T, class = std::enable_if_t<
-		std::is_base_of<T, CollectionInput>::value>>
+		std::is_base_of<CollectionInput, T>::value>>
 	Mapper(T const& input) : Mapper() {
-
+		vec_geometry_ = create_geometry_vec<T>(input);
+		create_internal_map();
 	}
 
 	GEOSContextHandle_t hl() { return global_handle_.get(); }
@@ -34,8 +35,9 @@ private:
 	GeometryHandle create_polygon(PointCoord const* pt, Index n);
 	
 	template<class T, class = std::enable_if_t<
-		std::is_base_of<T, CollectionInput>::value>>
-	std::vector<GeometryHandle> create_geometry_vec(CollectionInput const& input) {
+		std::is_base_of<CollectionInput, T>::value>>
+	std::vector<GeometryHandle> create_geometry_vec(
+		CollectionInput const& input) {
 		Index size = (Index)input.indptr.size() - 1;
 		std::vector<GeometryHandle> vec;
 		vec.reserve(size);
@@ -52,7 +54,7 @@ private:
 		}
 		return vec;
 	}
-	
+
 	void create_internal_map();
 };
 

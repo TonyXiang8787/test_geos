@@ -20,4 +20,9 @@ int main()
 
 	GEOSGeometry* linear_ring = GEOSGeom_createLinearRing_r(hl, coord_seq);
 	spatial_mapper::GeometryHandle polygon{ GEOSGeom_createPolygon_r(hl, linear_ring, nullptr, 0), hl };
+
+	spatial_mapper::PointCollection pc;
+	pc.indptr = { 0, 1 };
+	pc.data = { { 0.0, 0.0 } };
+	spatial_mapper::Mapper mapper2{ pc };
 }
