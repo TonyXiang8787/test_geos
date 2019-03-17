@@ -56,6 +56,10 @@ struct LineStringCollection : CollectionInput {};
 struct PolygonCollection : CollectionInput {};
 static_assert(sizeof(PointCoord) == sizeof(double[2]));
 static_assert(alignof(PointCoord) == alignof(double[2]));
+struct CollectionOutput {
+	IDVec data;
+	IDVec indptr;
+};
 
 // except
 #define THROW(CLS) throw CLS{ __FILE__, __LINE__ }

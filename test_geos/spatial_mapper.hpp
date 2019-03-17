@@ -39,15 +39,15 @@ public:
 	}
 
 	template<class T, class = cls_filter<T>>
-	CollectionInput find_intersect(T const& input) const {
+	CollectionOutput find_intersect(T const& input) const {
 		GeoVec geo_vec_to_map = create_geometry_vec<T>(input);
 		Index size = (Index)geo_vec_to_map.size();
-		CollectionInput mapped;
+		CollectionOutput mapped;
 		mapped.indptr.resize(size + 1);
 		mapped.indptr[0] = 0;
 
 		for (Index i = 0; i < size; i++) {
-			GEOSGeometry* geo = geo_vec_to_map[0].get();
+			GEOSGeometry* geo = geo_vec_to_map[i].get();
 			IDVec single_map = find_intersect(geo);
 			mapped.indptr[i + 1] = mapped.indptr[i] + (Index)single_map.size();
 			mapped.data.insert(mapped.data.end(), single_map.begin(), single_map.end());

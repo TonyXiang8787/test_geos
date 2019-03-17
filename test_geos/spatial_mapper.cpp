@@ -109,7 +109,7 @@ template std::vector<GeometryHandle> Mapper::create_geometry_vec
 IDVec Mapper::find_intersect(GEOSGeometry* geo) const
 {
 	CallBackData call_back_data{ hl(), geo, {} };
-	GEOSSTRtree_query_r(hl(), rt(), geo, call_back_intersect, geo);
+	GEOSSTRtree_query_r(hl(), rt(), geo, call_back_intersect, &call_back_data);
 	IDVec id_vec;
 	id_vec.reserve(call_back_data.mapped_ptrs.size());
 	for (GEOSGeometry const* ptr : call_back_data.mapped_ptrs)
