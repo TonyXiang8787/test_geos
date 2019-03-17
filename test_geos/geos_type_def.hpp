@@ -59,4 +59,7 @@ struct PolygonCollection {
 };
 static_assert(sizeof(PointCoord) == sizeof(double[2]));
 static_assert(alignof(PointCoord) == alignof(double[2]));
+
+// except
+#define THROW(CLS) throw CLS{ __FILE__, __LINE__ }
 }
