@@ -86,9 +86,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="spatial_mapper.cpp" />
     <ClCompile Include="test_geos.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="exception.hpp" />
     <ClInclude Include="geos_type_def.hpp" />
     <ClInclude Include="spatial_mapper.hpp" />
   </ItemGroup>

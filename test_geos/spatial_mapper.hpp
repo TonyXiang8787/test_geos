@@ -1,6 +1,8 @@
 #pragma once
 
 #include "geos_type_def.hpp"
+#include <unordered_map>
+#include <vector>
 
 
 namespace spatial_mapper {
@@ -17,6 +19,14 @@ public:
 private:
 	GlobalHandle const global_handle_;
 	RTreeHandle const rtree_;
+	std::vector<GeometryHandle> vec_geometry_;
+	std::unordered_map<GEOSGeometry*, Index> map_geometry_;
+
+	CoordSeqHandle create_coord_seq(PointCoord const* pt, Index n);
+	GeometryHandle create_point(PointCoord const* pt);
+	GeometryHandle create_linestring(PointCoord const* pt, Index n);
+	GeometryHandle create_polygon(PointCoord const* pt, Index n);
+
 };
 
 }

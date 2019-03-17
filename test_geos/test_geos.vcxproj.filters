@@ -18,12 +18,18 @@
     <ClCompile Include="test_geos.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="spatial_mapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="spatial_mapper.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="geos_type_def.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="exception.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
