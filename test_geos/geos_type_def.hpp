@@ -38,6 +38,7 @@ using CoordSeqHandle = unique_ptr_handle_deleter<
 	GEOSCoordSequence, GEOSCoordSeq_destroy_r>;
 using GeometryHandle = unique_ptr_handle_deleter<
 	GEOSGeometry, GEOSGeom_destroy_r>;
+using GeoVec = std::vector<GeometryHandle>;
 
 // input data structure
 struct PointCoord {

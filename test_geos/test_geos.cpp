@@ -6,23 +6,9 @@
 
 int main()
 {
-	spatial_mapper::Mapper mapper{};
-	GEOSContextHandle_t hl = mapper.hl();
-	GEOSCoordSequence* coord_seq = GEOSCoordSeq_create_r(hl, 4, 2);
-	GEOSCoordSeq_setX_r(hl, coord_seq, 0, 0.0);
-	GEOSCoordSeq_setY_r(hl, coord_seq, 0, 0.0);
-	GEOSCoordSeq_setX_r(hl, coord_seq, 1, 2.0);
-	GEOSCoordSeq_setY_r(hl, coord_seq, 1, 0.0);
-	GEOSCoordSeq_setX_r(hl, coord_seq, 2, 1.0);
-	GEOSCoordSeq_setY_r(hl, coord_seq, 2, 1.0);
-	GEOSCoordSeq_setX_r(hl, coord_seq, 3, 0.0);
-	GEOSCoordSeq_setY_r(hl, coord_seq, 3, 0.0);
+	spatial_mapper::PolygonCollection p;
+	p.indptr = { 0, 4 };
+	p.data = { { 0.0, 0.0 }, { 2.0, 0.0 }, { 1.0, 1.0 }, { 0.0, 0.0 } };
+	spatial_mapper::Mapper mapper{ p };
 
-	GEOSGeometry* linear_ring = GEOSGeom_createLinearRing_r(hl, coord_seq);
-	spatial_mapper::GeometryHandle polygon{ GEOSGeom_createPolygon_r(hl, linear_ring, nullptr, 0), hl };
-
-	spatial_mapper::PointCollection pc;
-	pc.indptr = { 0, 1 };
-	pc.data = { { 0.0, 0.0 } };
-	spatial_mapper::Mapper mapper2{ pc };
 }

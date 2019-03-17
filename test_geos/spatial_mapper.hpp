@@ -7,6 +7,10 @@
 
 namespace spatial_mapper {
 
+template<class T>
+using cls_filter = std::enable_if_t<
+	std::is_base_of<CollectionInput, T>::value>;
+
 class Mapper {
 public:
 	static constexpr size_t rtree_node_capacity = 10;
@@ -14,11 +18,11 @@ public:
 		global_handle_{ GEOS_init_r() },
 		rtree_{ GEOSSTRtree_create_r(hl(), rtree_node_capacity), hl() }
 	{}
-	template<class T, class = std::enable_if_t<
-		std::is_base_of<CollectionInput, T>::value>>
+	template<class T, class = cls_filter<T>>
 	Mapper(T const& input) : Mapper() {
 		vec_geometry_ = create_geometry_vec<T>(input);
 		create_internal_map();
+		insert_rtree();
 	}
 
 	GEOSContextHandle_t hl() { return global_handle_.get(); }
@@ -26,7 +30,7 @@ public:
 private:
 	GlobalHandle const global_handle_;
 	RTreeHandle const rtree_;
-	std::vector<GeometryHandle> vec_geometry_;
+	GeoVec vec_geometry_;
 	std::unordered_map<GEOSGeometry const*, Index> map_geometry_;
 
 	CoordSeqHandle create_coord_seq(PointCoord const* pt, Index n);
@@ -34,28 +38,12 @@ private:
 	GeometryHandle create_linestring(PointCoord const* pt, Index n);
 	GeometryHandle create_polygon(PointCoord const* pt, Index n);
 	
-	template<class T, class = std::enable_if_t<
-		std::is_base_of<CollectionInput, T>::value>>
-	std::vector<GeometryHandle> create_geometry_vec(
-		CollectionInput const& input) {
-		Index size = (Index)input.indptr.size() - 1;
-		std::vector<GeometryHandle> vec;
-		vec.reserve(size);
-		for (Index i = 0; i < size; i++)
-		{
-			Index begin = input.indptr[i];
-			Index len = input.indptr[i + 1] - begin;
-			if constexpr (std::is_same<T, PointCollection>::value)
-				vec.push_back(create_point(&input.data[begin], len));
-			else if constexpr (std::is_same<T, LineStringCollection>::value)
-				vec.push_back(create_linestring(&input.data[begin], len));
-			else if constexpr (std::is_same<T, PolygonCollection>::value)
-				vec.push_back(create_polygon(&input.data[begin], len));
-		}
-		return vec;
-	}
+	template<class T, class = cls_filter<T>>
+	GeoVec create_geometry_vec(
+			CollectionInput const& input);
 
 	void create_internal_map();
+	void insert_rtree();
 };
 
 }

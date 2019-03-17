@@ -65,4 +65,36 @@ void Mapper::create_internal_map()
 		map_geometry_[vec_geometry_[i].get()] = i;
 }
 
+void Mapper::insert_rtree()
+{
+	for (GeometryHandle & geo : vec_geometry_)
+		GEOSSTRtree_insert_r(hl(), rt(), geo.get(), geo.get());
+}
+
+template<class T, class>
+GeoVec Mapper::create_geometry_vec(
+		CollectionInput const& input) {
+	Index size = (Index)input.indptr.size() - 1;
+	GeoVec vec;
+	vec.reserve(size);
+	for (Index i = 0; i < size; i++)
+	{
+		Index begin = input.indptr[i];
+		Index len = input.indptr[i + 1] - begin;
+		if constexpr (std::is_same<T, PointCollection>::value)
+			vec.push_back(create_point(&input.data[begin], len));
+		else if constexpr (std::is_same<T, LineStringCollection>::value)
+			vec.push_back(create_linestring(&input.data[begin], len));
+		else if constexpr (std::is_same<T, PolygonCollection>::value)
+			vec.push_back(create_polygon(&input.data[begin], len));
+	}
+	return vec;
+}
+template std::vector<GeometryHandle> Mapper::create_geometry_vec
+<PointCollection>(CollectionInput const& input);
+template std::vector<GeometryHandle> Mapper::create_geometry_vec
+<LineStringCollection>(CollectionInput const& input);
+template std::vector<GeometryHandle> Mapper::create_geometry_vec
+<PolygonCollection>(CollectionInput const& input);
+
 }
