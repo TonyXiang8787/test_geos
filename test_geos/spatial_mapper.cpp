@@ -58,11 +58,14 @@ GeometryHandle Mapper::create_polygon(PointCoord const* pt, Index n) const
 	return geo_hl;
 }
 
-void Mapper::create_internal_map()
+std::unordered_map<GEOSGeometry const*, Index> 
+Mapper::create_internal_map() const
 {
 	Index const size = (Index)vec_geometry_.size();
+	std::unordered_map<GEOSGeometry const*, Index> map_geometry;
 	for (Index i = 0; i < size; i++)
-		map_geometry_[vec_geometry_[i].get()] = i;
+		map_geometry[vec_geometry_[i].get()] = i;
+	return map_geometry;
 }
 
 void Mapper::insert_rtree() const

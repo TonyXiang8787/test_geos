@@ -14,14 +14,14 @@ using cls_filter = std::enable_if_t<
 class Mapper {
 public:
 	static constexpr size_t rtree_node_capacity = 10;
-	Mapper() :
-		global_handle_{ GEOS_init_r() },
-		rtree_{ GEOSSTRtree_create_r(hl(), rtree_node_capacity), hl() }
-	{}
+
 	template<class T, class = cls_filter<T>>
-	Mapper(T const& input) : Mapper() {
-		vec_geometry_ = create_geometry_vec<T>(input);
-		create_internal_map();
+	Mapper(T const& input) : 
+		global_handle_{ GEOS_init_r() },
+		rtree_{ GEOSSTRtree_create_r(hl(), rtree_node_capacity), hl() },
+		vec_geometry_{ create_geometry_vec<T>(input) },
+		map_geometry_{ create_internal_map() }
+	{
 		insert_rtree();
 	}
 	GEOSContextHandle_t hl() const { return global_handle_.get(); }
@@ -57,8 +57,8 @@ public:
 private:
 	GlobalHandle const global_handle_;
 	RTreeHandle const rtree_;
-	GeoVec vec_geometry_;
-	std::unordered_map<GEOSGeometry const*, Index> map_geometry_;
+	GeoVec const vec_geometry_;
+	std::unordered_map<GEOSGeometry const*, Index> const map_geometry_;
 
 	CoordSeqHandle create_coord_seq(PointCoord const* pt, Index n) const;
 	GeometryHandle create_point(PointCoord const* pt, Index n) const;
@@ -68,7 +68,8 @@ private:
 	template<class T, class = cls_filter<T>>
 	GeoVec create_geometry_vec(
 			CollectionInput const& input) const;
-	void create_internal_map();
+	std::unordered_map<GEOSGeometry const*, Index> 
+		create_internal_map() const;
 	void insert_rtree() const;
 
 	Index find_nearest(GEOSGeometry* geo) const;
