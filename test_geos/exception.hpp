@@ -35,6 +35,8 @@ SUBCLSEX(PointSeqError, "Point sequence error!");
 SUBCLSEX(PointError, "Point error!");
 SUBCLSEX(LineStringError, "Line string error!");
 SUBCLSEX(PolygonError, "Polygon error!");
+SUBCLSEX(RTreeError, "RTree error!");
+
 #undef SUBCLSEX
 
 }

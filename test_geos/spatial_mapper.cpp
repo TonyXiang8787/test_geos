@@ -3,7 +3,7 @@
 
 namespace spatial_mapper {
 
-CoordSeqHandle Mapper::create_coord_seq(PointCoord const* pt, Index n)
+CoordSeqHandle Mapper::create_coord_seq(PointCoord const* pt, Index n) const
 {
 	GEOSCoordSequence* coord_seq = GEOSCoordSeq_create_r(hl(), n, 2);
 	if (!coord_seq)
@@ -18,7 +18,7 @@ CoordSeqHandle Mapper::create_coord_seq(PointCoord const* pt, Index n)
 	return coord_seq_hl;
 }
 
-GeometryHandle Mapper::create_point(PointCoord const* pt, Index)
+GeometryHandle Mapper::create_point(PointCoord const* pt, Index) const
 {
 	CoordSeqHandle seq = create_coord_seq(pt, 1);
 	GEOSGeometry* geo = GEOSGeom_createPoint_r(hl(), seq.get());
@@ -29,7 +29,7 @@ GeometryHandle Mapper::create_point(PointCoord const* pt, Index)
 	return geo_hl;
 }
 
-GeometryHandle Mapper::create_linestring(PointCoord const* pt, Index n)
+GeometryHandle Mapper::create_linestring(PointCoord const* pt, Index n) const
 {
 	CoordSeqHandle seq = create_coord_seq(pt, n);
 	GEOSGeometry* geo = GEOSGeom_createLineString_r(hl(), seq.get());
@@ -40,7 +40,7 @@ GeometryHandle Mapper::create_linestring(PointCoord const* pt, Index n)
 	return geo_hl;
 }
 
-GeometryHandle Mapper::create_polygon(PointCoord const* pt, Index n)
+GeometryHandle Mapper::create_polygon(PointCoord const* pt, Index n) const
 {
 	CoordSeqHandle seq = create_coord_seq(pt, n);
 	// linear ring
@@ -65,15 +65,23 @@ void Mapper::create_internal_map()
 		map_geometry_[vec_geometry_[i].get()] = i;
 }
 
-void Mapper::insert_rtree()
+void Mapper::insert_rtree() const
 {
-	for (GeometryHandle & geo : vec_geometry_)
+	for (GeometryHandle const& geo : vec_geometry_)
 		GEOSSTRtree_insert_r(hl(), rt(), geo.get(), geo.get());
+}
+
+Index Mapper::find_nearest(GEOSGeometry const * geo) const
+{
+	GEOSGeometry const *nearest = GEOSSTRtree_nearest_r(hl(), rt(), geo);
+	if (!nearest)
+		THROW(RTreeError);
+	return map_geometry_.at(nearest);
 }
 
 template<class T, class>
 GeoVec Mapper::create_geometry_vec(
-		CollectionInput const& input) {
+		CollectionInput const& input) const {
 	Index size = (Index)input.indptr.size() - 1;
 	GeoVec vec;
 	vec.reserve(size);
@@ -91,10 +99,10 @@ GeoVec Mapper::create_geometry_vec(
 	return vec;
 }
 template std::vector<GeometryHandle> Mapper::create_geometry_vec
-<PointCollection>(CollectionInput const& input);
+<PointCollection>(CollectionInput const& input) const;
 template std::vector<GeometryHandle> Mapper::create_geometry_vec
-<LineStringCollection>(CollectionInput const& input);
+<LineStringCollection>(CollectionInput const& input) const;
 template std::vector<GeometryHandle> Mapper::create_geometry_vec
-<PolygonCollection>(CollectionInput const& input);
+<PolygonCollection>(CollectionInput const& input) const;
 
 }
