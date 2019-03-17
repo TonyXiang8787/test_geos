@@ -18,7 +18,7 @@ CoordSeqHandle Mapper::create_coord_seq(PointCoord const* pt, Index n)
 	return coord_seq_hl;
 }
 
-GeometryHandle Mapper::create_point(PointCoord const* pt)
+GeometryHandle Mapper::create_point(PointCoord const* pt, Index)
 {
 	CoordSeqHandle seq = create_coord_seq(pt, 1);
 	GEOSGeometry* geo = GEOSGeom_createPoint_r(hl(), seq.get());
@@ -56,6 +56,13 @@ GeometryHandle Mapper::create_polygon(PointCoord const* pt, Index n)
 	GeometryHandle geo_hl{ geo, hl() };
 	geo_ring_hl.release();
 	return geo_hl;
+}
+
+void Mapper::create_internal_map()
+{
+	Index const size = (Index)vec_geometry_.size();
+	for (Index i = 0; i < size; i++)
+		map_geometry_[vec_geometry_[i].get()] = i;
 }
 
 }
