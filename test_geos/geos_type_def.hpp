@@ -46,17 +46,13 @@ struct PointCoord {
 };
 using CoordVec = std::vector<PointCoord>;
 using IDVec = std::vector<Index>;
-struct PointCollection {
-	CoordVec data;
-};
-struct LineStringCollection {
+struct CollectionInput {
 	CoordVec data;
 	IDVec indptr;
 };
-struct PolygonCollection {
-	CoordVec data;
-	IDVec indptr;
-};
+struct PointCollection : CollectionInput {};
+struct LineStringCollection : CollectionInput {};
+struct PolygonCollection : CollectionInput {};
 static_assert(sizeof(PointCoord) == sizeof(double[2]));
 static_assert(alignof(PointCoord) == alignof(double[2]));
 
