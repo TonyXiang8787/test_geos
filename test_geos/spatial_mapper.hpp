@@ -33,8 +33,8 @@ public:
 		Index size = (Index)geo_vec_to_map.size();
 		IDVec mapped_ind;
 		mapped_ind.reserve(size);
-		for (Index i = 0; i < size; i++)
-			mapped_ind[i] = find_nearest(geo_vec_to_map[i].get());
+		for (GeometryHandle const & geo : geo_vec_to_map)
+			mapped_ind.push_back(find_nearest(geo.get()));
 		return mapped_ind;
 	}
 private:

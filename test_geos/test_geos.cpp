@@ -12,8 +12,10 @@ int main()
 	spatial_mapper::Mapper mapper{ p };
 
 	spatial_mapper::PointCollection pp;
-	pp.indptr = { 0, 1 };
-	pp.data = { { 0.5, 0.5 } };
+	pp.indptr = { 0, 1, 2, 3 };
+	pp.data = { { 1.0, 0.5 }, { 1.9, 0.9 }, { 2.5, 2.5 } };
 	auto x = mapper.find_nearest(pp);
 	std::cout << x[0] << '\n';
+	std::cout << x[1] << '\n';
+	std::cout << x[2] << '\n';
 }
