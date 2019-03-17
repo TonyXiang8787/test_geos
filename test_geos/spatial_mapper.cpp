@@ -71,7 +71,7 @@ void Mapper::insert_rtree() const
 		GEOSSTRtree_insert_r(hl(), rt(), geo.get(), geo.get());
 }
 
-Index Mapper::find_nearest(GEOSGeometry const * geo) const
+Index Mapper::find_nearest(GEOSGeometry* geo) const
 {
 	GEOSGeometry const *nearest = GEOSSTRtree_nearest_r(hl(), rt(), geo);
 	if (!nearest)
@@ -104,5 +104,17 @@ template std::vector<GeometryHandle> Mapper::create_geometry_vec
 <LineStringCollection>(CollectionInput const& input) const;
 template std::vector<GeometryHandle> Mapper::create_geometry_vec
 <PolygonCollection>(CollectionInput const& input) const;
+
+
+IDVec Mapper::find_intersect(GEOSGeometry* geo) const
+{
+	CallBackData call_back_data{ hl(), geo, {} };
+	GEOSSTRtree_query_r(hl(), rt(), geo, call_back_intersect, geo);
+	IDVec id_vec;
+	id_vec.reserve(call_back_data.mapped_ptrs.size());
+	for (GEOSGeometry const* ptr : call_back_data.mapped_ptrs)
+		id_vec.push_back(map_geometry_.at(ptr));
+	return id_vec;
+}
 
 }

@@ -86,6 +86,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="call_back_intersect.cpp" />
     <ClCompile Include="spatial_mapper.cpp" />
     <ClCompile Include="test_geos.cpp" />
   </ItemGroup>

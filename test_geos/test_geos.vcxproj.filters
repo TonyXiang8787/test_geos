@@ -21,6 +21,9 @@
     <ClCompile Include="spatial_mapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="call_back_intersect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="spatial_mapper.hpp">

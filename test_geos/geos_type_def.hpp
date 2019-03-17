@@ -59,4 +59,12 @@ static_assert(alignof(PointCoord) == alignof(double[2]));
 
 // except
 #define THROW(CLS) throw CLS{ __FILE__, __LINE__ }
+
+// call back intersect
+struct CallBackData {
+	GEOSContextHandle_t const hl;
+	GEOSGeometry const* const geo;
+	std::vector<GEOSGeometry const*> mapped_ptrs;
+};
+void call_back_intersect(void* item, void* user_data);
 }

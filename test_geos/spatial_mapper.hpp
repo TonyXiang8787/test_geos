@@ -37,6 +37,23 @@ public:
 			mapped_ind.push_back(find_nearest(geo.get()));
 		return mapped_ind;
 	}
+
+	template<class T, class = cls_filter<T>>
+	CollectionInput find_intersect(T const& input) const {
+		GeoVec geo_vec_to_map = create_geometry_vec<T>(input);
+		Index size = (Index)geo_vec_to_map.size();
+		CollectionInput mapped;
+		mapped.indptr.resize(size + 1);
+		mapped.indptr[0] = 0;
+
+		for (Index i = 0; i < size; i++) {
+			GEOSGeometry* geo = geo_vec_to_map[0].get();
+			IDVec single_map = find_intersect(geo);
+			mapped.indptr[i + 1] = mapped.indptr[i] + (Index)single_map.size();
+			mapped.data.insert(mapped.data.end(), single_map.begin(), single_map.end());
+		}
+		return mapped;
+	}
 private:
 	GlobalHandle const global_handle_;
 	RTreeHandle const rtree_;
@@ -54,7 +71,8 @@ private:
 	void create_internal_map();
 	void insert_rtree() const;
 
-	Index find_nearest(GEOSGeometry const* geo) const;
+	Index find_nearest(GEOSGeometry* geo) const;
+	IDVec find_intersect(GEOSGeometry* geo) const;
 };
 
 }
