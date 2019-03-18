@@ -3,6 +3,23 @@
 
 namespace spatial_mapper {
 
+GEOSContextHandle_t Mapper::create_geos_handle()
+{
+	GEOSContextHandle_t hl = GEOS_init_r();
+	if (!hl)
+		THROW(MapperError);
+	return hl;
+}
+
+GEOSSTRtree* Mapper::create_rtree_handle() const
+{
+	GEOSSTRtree* rt = GEOSSTRtree_create_r(hl(), rtree_node_capacity);
+	if (!rt)
+		THROW(RTreeError);
+	return rt;
+}
+
+
 CoordSeqHandle Mapper::create_coord_seq(PointCoord const* pt, Index n) const
 {
 	GEOSCoordSequence* coord_seq = GEOSCoordSeq_create_r(hl(), n, 2);
@@ -10,9 +27,9 @@ CoordSeqHandle Mapper::create_coord_seq(PointCoord const* pt, Index n) const
 		THROW(PointSeqError);
 	CoordSeqHandle coord_seq_hl{ coord_seq, hl() };
 	for (Index i = 0; i < n; i++) {
-		int intx = GEOSCoordSeq_setX_r(hl(), coord_seq, i, pt[i].x);
-		int inty = GEOSCoordSeq_setY_r(hl(), coord_seq, i, pt[i].y);
-		if (intx * inty == 0)
+		int error_x = GEOSCoordSeq_setX_r(hl(), coord_seq, i, pt[i].x);
+		int error_y = GEOSCoordSeq_setY_r(hl(), coord_seq, i, pt[i].y);
+		if (error_x * error_y == 0)
 			THROW(PointSeqError);
 	}
 	return coord_seq_hl;
@@ -111,8 +128,10 @@ template std::vector<GeometryHandle> Mapper::create_geometry_vec
 
 IDVec Mapper::find_intersect(GEOSGeometry* geo) const
 {
-	CallBackData call_back_data{ hl(), geo, {} };
+	CallBackData call_back_data{ hl(), geo, {}, 0 };
 	GEOSSTRtree_query_r(hl(), rt(), geo, call_back_intersect, &call_back_data);
+	if (call_back_data.error_code == 1)
+		THROW(RTreeError);
 	IDVec id_vec;
 	id_vec.reserve(call_back_data.mapped_ptrs.size());
 	for (GEOSGeometry const* ptr : call_back_data.mapped_ptrs)

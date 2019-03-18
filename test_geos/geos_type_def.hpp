@@ -69,6 +69,7 @@ struct CallBackData {
 	GEOSContextHandle_t const hl;
 	GEOSGeometry const* const geo;
 	std::vector<GEOSGeometry const*> mapped_ptrs;
+	int error_code;
 };
 void call_back_intersect(void* item, void* user_data);
 }

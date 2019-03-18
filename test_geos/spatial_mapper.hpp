@@ -17,14 +17,14 @@ public:
 
 	template<class T, class = cls_filter<T>>
 	Mapper(T const& input) : 
-		global_handle_{ GEOS_init_r() },
-		rtree_{ GEOSSTRtree_create_r(hl(), rtree_node_capacity), hl() },
+		geos_handle_{ create_geos_handle() },
+		rtree_{ create_rtree_handle(), hl() },
 		vec_geometry_{ create_geometry_vec<T>(input) },
 		map_geometry_{ create_internal_map() }
 	{
 		insert_rtree();
 	}
-	GEOSContextHandle_t hl() const { return global_handle_.get(); }
+	GEOSContextHandle_t hl() const { return geos_handle_.get(); }
 	GEOSSTRtree* rt() const { return rtree_.get(); }
 
 	template<class T, class = cls_filter<T>>
@@ -55,11 +55,16 @@ public:
 		return mapped;
 	}
 private:
-	GlobalHandle const global_handle_;
+	GlobalHandle const geos_handle_;
 	RTreeHandle const rtree_;
 	GeoVec const vec_geometry_;
 	std::unordered_map<GEOSGeometry const*, Index> const map_geometry_;
 
+	// create handle
+	static GEOSContextHandle_t create_geos_handle();
+	GEOSSTRtree* create_rtree_handle() const;
+
+	// create geometry
 	CoordSeqHandle create_coord_seq(PointCoord const* pt, Index n) const;
 	GeometryHandle create_point(PointCoord const* pt, Index n) const;
 	GeometryHandle create_linestring(PointCoord const* pt, Index n) const;
