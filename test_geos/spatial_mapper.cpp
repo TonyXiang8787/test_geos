@@ -128,7 +128,7 @@ template std::vector<GeometryHandle> Mapper::create_geometry_vec
 
 IDVec Mapper::find_intersect(GEOSGeometry* geo) const
 {
-	CallBackData call_back_data{ hl(), geo, {}, 0 };
+	CallBackDataIntersect call_back_data{ hl(), geo, {}, 0 };
 	GEOSSTRtree_query_r(hl(), rt(), geo, call_back_intersect, &call_back_data);
 	if (call_back_data.error_code == 1)
 		THROW(RTreeError);

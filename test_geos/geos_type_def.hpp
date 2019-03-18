@@ -65,7 +65,7 @@ struct CollectionOutput {
 #define THROW(CLS) throw CLS{ __FILE__, __LINE__ }
 
 // call back intersect
-struct CallBackData {
+struct CallBackDataIntersect {
 	GEOSContextHandle_t const hl;
 	GEOSGeometry const* const geo;
 	std::vector<GEOSGeometry const*> mapped_ptrs;
